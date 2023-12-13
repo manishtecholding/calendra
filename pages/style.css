@@ -1,0 +1,28 @@
+body {
+    font-family: 'Lato', sans-serif;
+}
+
+.full-length {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+}
+
+.calendar-inner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+}
+
+.logout-parent {
+    position: absolute;
+    bottom: 20px;
+    z-index: 9999;
+    width: 11.5%;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+}

@@ -1,0 +1,14 @@
+{
+    "name": "Calendra",
+    "version": "1.0",
+    "description": "A chrome extension to show all your calendar events in one place.",
+    "manifest_version": 3,
+    "author": "Manish Pamnani",
+    "action": {
+        "default_popup": "../pages/popup/popup.html"
+    },
+    "permissions": ["tabs", "storage", "identity", "identity.email"],
+    "background": {
+        "service_worker": "background.js"
+    }
+}

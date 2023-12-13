@@ -1,0 +1,46 @@
+#signInButton {
+    width: 175px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background: #f2f2f2;
+    border: none;
+    border-radius: 50px;
+    color: black;
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    margin-bottom: 10px;
+}
+
+#signInButtonOutlook {
+    width: 175px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background: #0072C6;
+    border: none;
+    border-radius: 50px;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    margin-bottom: 10px;
+}
+
+#signInImage {
+    width: 20px;
+}
+
+#success {
+    display: none
+}
+
+.parent {
+    padding: 15px;
+}
+
+#signInImageOutlook {
+    width: 20px;
+    filter: invert(1);
+}
