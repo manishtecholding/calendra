@@ -27,7 +27,7 @@ function clearToken() {
 
     chrome.storage.local
         .get(['access_token'])
-        .then((result) => {})
+        .then((result) => { })
         .catch((error) => {
             console.error('Error in signing in', error);
         });
@@ -50,7 +50,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
                 .set({ access_token })
                 .then(() => {
                     redirectToHomePage(tabId);
-                    getEventsByCalendarId(email);
+                    // getEventsByCalendarId(email);
                 })
                 .catch((error) => {
                     console.error('error in closing the tab', error);

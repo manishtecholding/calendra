@@ -48,3 +48,7 @@ body {
     color: white;
     cursor: pointer;
 }
+
+#user-email {
+    font-weight: bold;
+}

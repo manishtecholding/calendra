@@ -38,8 +38,8 @@
 
         <div class="parent">
             <div></div>
-            <div>Welcome User!</div>
-            <div>
+            <div>Welcome <span id="user-email">User</span>!</div>
+            <div style="margin-top: 10px; margin-right: 10px">
                 <button
                     class="add-button"
                     data-bs-toggle="modal"
@@ -54,7 +54,7 @@
             <div id="calendar"></div>
         </div>
 
-        <!-- Modal -->
+        <!-- Option Selector Modal -->
         <div
             class="modal fade"
             id="widgetSelector"
@@ -92,7 +92,29 @@
                 </div>
             </div>
         </div>
-        <!-- Modal -->
+        <!-- Option Selector Modal -->
+
+        <!-- Event List/Detail Modal -->
+        <div
+            class="modal fade"
+            id="eventListModal"
+            tabindex="-1"
+            aria-labelledby="eventListModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal Header -->
+                    <div class="modal-header"><b>Event List</b></div>
+                    <!-- Modal Body -->
+                    <div
+                        class="modal-body"
+                        id="event-list-body"
+                    ></div>
+                </div>
+            </div>
+        </div>
+        <!-- Event List/Detail Modal -->
 
         <div class="logout-parent">
             <a id="logout-button">Logout</a>
