@@ -17,23 +17,92 @@
         />
         <link
             rel="stylesheet"
-            href="../scripts/evo-calendar/evo-calendar.min.css"
+            href="./style.css"
         />
+        <!-- Calendar -->
         <link
             rel="stylesheet"
-            href="./style.css"
+            href="../theme-basic.css"
+        />
+        <!-- Calendar -->
+
+        <link
+            rel="stylesheet"
+            href="../bootstrap.min.css"
         />
     </head>
     <body>
+        <div class="logout-parent">
+            <a id="logout-button">Logout</a>
+        </div>
+
+        <div class="parent">
+            <div></div>
+            <div>Welcome User!</div>
+            <div>
+                <button
+                    class="add-button"
+                    data-bs-toggle="modal"
+                    data-bs-target="#widgetSelector"
+                >
+                    +
+                </button>
+            </div>
+        </div>
+
+        <div id="calendar-parent">
+            <div id="calendar"></div>
+        </div>
+
+        <!-- Modal -->
         <div
-            id="calendar"
-            class="full-length"
-        ></div>
+            class="modal fade"
+            id="widgetSelector"
+            tabindex="-1"
+            aria-labelledby="exampleModalLabel"
+            aria-hidden="true"
+        >
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1
+                            class="modal-title fs-5"
+                            id="exampleModalLabel"
+                        >
+                            Which widget do you want to add?
+                        </h1>
+                        <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <ul
+                            class="menu-list"
+                            id="menu-list"
+                        >
+                            <li class="menu-item">Calendar</li>
+                            <li class="menu-item">Jira</li>
+                            <li class="menu-item">Todo</li>
+                            <li class="menu-item">Notes</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+
         <div class="logout-parent">
             <a id="logout-button">Logout</a>
         </div>
     </body>
-    <script src="../scripts/jquery.min.js"></script>
-    <script src="../scripts/evo-calendar/evo-calendar.min.js"></script>
+    <script src="../bootstrap.bundle.min.js"></script>
+
+    <!-- Calendar -->
+    <script src="../bundle.js"></script>
+    <!-- Calendar -->
+
     <script src="../pages/main.js"></script>
 </html>
