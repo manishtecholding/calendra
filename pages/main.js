@@ -1,5 +1,6 @@
 let accessToken;
 let myCal;
+let userEmail;
 
 /**
  * @description Gets Start and End Date by Month Name
@@ -47,6 +48,7 @@ const fetchEmail = () => {
 
         const email = document.getElementById('user-email');
         email.innerHTML = result?.email;
+        userEmail = result?.email;
     });
 };
 
@@ -59,12 +61,7 @@ const initCalendar = () => {
         id: '#calendar',
         calendarSize: 'small',
         eventsData: [
-            {
-                id: 1,
-                start: '2023-12-20T03:00:00',
-                end: '2023-12-20T20:30:00',
-                name: 'Blockchain 101'
-            }
+            {}
         ],
         selectedDateClicked: (currentDate, filteredMonthEvents) => {
             showEventDetails(filteredMonthEvents);
@@ -119,6 +116,7 @@ const showEventDetails = (filteredMonthEvents) => {
     eventListModal.show();
 
     const element = document.querySelector('#event-list-body');
+    element.style.display = 'block';
 
     // Make a UL and attach it to the parent
     const eventListUl = document.createElement('ul');
@@ -131,13 +129,24 @@ const showEventDetails = (filteredMonthEvents) => {
         eventListLI.classList.add('menu-item');
         eventListLI.id = element?.id;// Custom id;
         eventListLI.innerHTML = element?.name;
+        eventListLI.addEventListener('click', () => {
+            fetchEvent(element);
+        });
+
         eventListUl.appendChild(eventListLI);
+
     });
 
     const eventListModalById = document.getElementById('eventListModal');
+    const eventDetailBody = document.getElementById('event-detail-body');
+    const eventListBody = document.getElementById('event-list-body');
+
     eventListModalById.addEventListener('hidden.bs.modal', () => {
-        filteredMonthEvents = [];
-        element.replaceChildren([]);
+        console.log('hidden');
+        // filteredMonthEvents = [];
+        // element.replaceChildren([]);
+        eventDetailBody.replaceChildren([]);
+        eventListBody.replaceChildren([]);
     });
 
 };
@@ -168,5 +177,78 @@ const initWidget = () => {
     });
 };
 
+const element = document.getElementsByClassName('menu-item');
+console.log(element);
+
+// https://google-calendar-brown.vercel.app
+// {{URL}}/calendars/manish.pamnani@techholding.co/events/3hl2bei35fv3l28vsucs2e9v1i_20231212T093000Z
+const fetchEvent = async (event) => {
+    console.log(event);
+    // console.log(userEmail);
+
+    // console.log(accessToken);
+    // console.log(access_token);
+    // console.log(options);
+
+    try {
+        let options = {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+            },
+        };
+
+        await fetch(`https://google-calendar-brown.vercel.app/calendars/${userEmail}/events/${event?.id}`, options).then((res) => res.json())
+            .then((result) => {
+                console.log(result?.data);
+
+                // Hide the Event List body and show the Event Details body(with content)
+                const element = document.getElementById('event-list-body');
+                element.style.display = 'none';
+
+                const eventDetailBody = document.getElementById('event-detail-body');
+
+                const title = document.createElement('span');
+                title.classList.add('event-list-item');
+                title.id = 'event-title';
+                title.innerHTML = event?.name;
+
+                const time = document.createElement('span');
+                time.classList.add('event-list-item');
+                time.innerHTML = result?.data?.start?.dateTime + ' ' + result?.data?.end?.dateTime;
+
+                const joinButton = document.createElement('span');
+                joinButton.classList.add('event-list-item');
+                joinButton.innerHTML = `<a href="${result?.data?.hangoutLink}" target="_blank">Join with Google Meet</a>`;
+
+                const summary = document.createElement('span');
+                summary.classList.add('event-list-item');
+                summary.innerHTML = result?.data?.summary;
+
+                eventDetailBody.appendChild(title);
+                eventDetailBody?.appendChild(time);
+                eventDetailBody?.appendChild(joinButton);
+                eventDetailBody?.appendChild(summary);
+
+
+
+
+            })
+            .catch((error) => console.error('Error in fetching Event details: ', error));
+    } catch (error) {
+        console.error('Error in fetching Event Details: ', error);
+    }
+};
+
+const fetchAccessToken = () => {
+    console.log('fetchAccessToken');
+
+    chrome.storage.local.get(['access_token']).then((result) => {
+        accessToken = result?.access_token;
+        console.log(accessToken);
+    }).catch((error) => console.error('Error in fetching access_token: ', error));
+
+};
+
 fetchEmail();
 initWidget();
+fetchAccessToken();

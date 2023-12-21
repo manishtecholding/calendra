@@ -32,34 +32,32 @@
         />
     </head>
     <body>
-        <div class="logout-parent">
-            <a id="logout-button">Logout</a>
-        </div>
-
-        <div class="parent">
-            <div></div>
-            <div>Welcome <span id="user-email">User</span>!</div>
-            <div style="margin-top: 10px; margin-right: 10px">
-                <button
-                    class="add-button"
-                    data-bs-toggle="modal"
-                    data-bs-target="#widgetSelector"
-                >
-                    +
-                </button>
+        <main>
+            <div class="parent">
+                <div></div>
+                <div>Welcome <span id="user-email">User</span>!</div>
+                <div class="action-panel">
+                    <button
+                        class="add-button"
+                        data-bs-toggle="modal"
+                        data-bs-target="#widgetSelector"
+                    >
+                        +
+                    </button>
+                </div>
             </div>
-        </div>
 
-        <div id="calendar-parent">
-            <div id="calendar"></div>
-        </div>
+            <div id="calendar-parent">
+                <div id="calendar"></div>
+            </div>
+        </main>
 
         <!-- Option Selector Modal -->
         <div
             class="modal fade"
             id="widgetSelector"
             tabindex="-1"
-            aria-labelledby="exampleModalLabel"
+            aria-labelledby="widgetSelectorLabel"
             aria-hidden="true"
         >
             <div class="modal-dialog">
@@ -67,7 +65,7 @@
                     <div class="modal-header">
                         <h1
                             class="modal-title fs-5"
-                            id="exampleModalLabel"
+                            id="widgetSelectorLabel"
                         >
                             Which widget do you want to add?
                         </h1>
@@ -104,21 +102,23 @@
         >
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <!-- Modal Header -->
                     <div class="modal-header"><b>Event List</b></div>
-                    <!-- Modal Body -->
                     <div
                         class="modal-body"
                         id="event-list-body"
                     ></div>
+
+                    <div id="event-detail-body"></div>
                 </div>
             </div>
         </div>
         <!-- Event List/Detail Modal -->
 
-        <div class="logout-parent">
-            <a id="logout-button">Logout</a>
-        </div>
+        <footer>
+            <div class="logout-parent">
+                <a id="logout-button">Logout</a>
+            </div>
+        </footer>
     </body>
     <script src="../bootstrap.bundle.min.js"></script>
 

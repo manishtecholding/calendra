@@ -52,3 +52,22 @@ body {
 #user-email {
     font-weight: bold;
 }
+
+.action-panel {
+    /* top-margin right-margin bottom-margin left-margin  */
+    margin: 0.625rem 0.625rem 0 0;
+}
+
+#event-detail-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#event-title {
+    font-weight: bold;
+}
+
+.event-list-item {
+    margin: 0.625rem 0;
+}
