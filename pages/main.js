@@ -1,157 +1,13 @@
 let accessToken;
 let myCal;
 
-const widgetSelector = new bootstrap.Modal('#widgetSelector', {
-    keyboard: false
-});
-
-const InitializeCalendar = () => {
-    myCal = new Calendar({
-        id: '#calendar',
-        calendarSize: 'small',
-        eventsData: [
-            {
-                id: 1,
-                start: '2023-12-20T03:00:00',
-                end: '2023-12-20T20:30:00',
-                name: 'Blockchain 101'
-            }
-        ],
-        selectedDateClicked: (currentDate, filteredMonthEvents) => {
-            console.log(currentDate);
-            console.log(filteredMonthEvents);
-            showEventDetails(filteredMonthEvents);
-        }
-    });
-
-    const handleOnClose = () => {
-        console.log('handleOnClose');
-    };
-
-    const showEventDetails = (filteredMonthEvents) => {
-        // event-list-body
-        console.log('showEventDetails', filteredMonthEvents);
-
-        const eventListModal = new bootstrap.Modal('#eventListModal', {
-            keyboard: false,
-
-        });
-
-        eventListModal.show();
-
-        const element = document.querySelector('#event-list-body');
-
-        // Make a UL and attach it to the parent
-        const eventListUl = document.createElement('ul');
-        eventListUl.classList.add('menu-list');
-        element.appendChild(eventListUl);
-
-        // Make a LI element and append it to the UL
-
-        filteredMonthEvents?.map((element, index) => {
-            console.log('element', element);
-            const eventListLI = document.createElement('li');
-            eventListLI.classList.add('menu-item');
-            eventListLI.id = element?.id;// Custom id;
-            eventListLI.innerHTML = element?.name;
-            eventListUl.appendChild(eventListLI);
-        });
-
-        const eventListModalById = document.getElementById('eventListModal');
-        eventListModalById.addEventListener('hidden.bs.modal', (event) => {
-            console.log(event);
-
-            filteredMonthEvents = [];
-            element.replaceChildren([]);
-        });
-
-
-
-
-    };
-
-    const currentDate = new Date();
-    const currentYear = currentDate.getFullYear();
-
-    const { startDate, endDate } = getStartEndDateByMonthName(
-        "December",
-        currentYear
-    );
-
-    chrome.runtime.sendMessage({
-        getEventsByCalendarId: { startDate, endDate },
-    });
-
-    console.log(myCal);
-
-    // Add a custom event
-    // const eventData = [{
-    //     id: 1,
-    //     start: '2023-12-20T03:00:00',
-    //     end: '2023-12-31T20:30:00',
-    //     name: 'Blockchain 101'
-    // }];
-
-    // myCal.addEventsData(eventData);
-};
-
-const menuList = document.getElementById('menu-list');
-menuList.addEventListener('click', (event) => {
-
-    if (event.target.tagName === 'LI' && event.target.classList.contains('menu-item')) {
-        const selectedValue = event.target.textContent;
-
-        if (selectedValue === 'Calendar') {
-            // Initialise the calendar
-            InitializeCalendar();
-            widgetSelector.hide();
-        }
-    }
-});
-
-// Recieve the message sent from the background script
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log(message);
-
-    message?.events.forEach((element, index) => {
-        myCal.addEventsData([{
-            id: element?.id,
-            start: element?.start?.dateTime,
-            end: element?.end?.dateTime,
-            name: element?.summary
-        }]);
-    });
-});
-
-chrome.identity.getProfileUserInfo((result) => {
-    console.log(result);
-
-    const email = document.getElementById('user-email');
-    email.innerHTML = result?.email;
-    // user-email
-});
-
-console.log(myCal);
-
-
-
-// When User clicks a month
-// Caution: use .on('eventListenrer') instead of .evoCalendar('eventListener'). It resets the calendar after it is initialised
-// $('#calendar').on('selectMonth', (event, activeMonth) => {
-//     const currentDate = new Date();
-//     const currentYear = currentDate.getFullYear();
-
-//     const { startDate, endDate } = getStartEndDateByMonthName(
-//         activeMonth,
-//         currentYear
-//     );
-
-//     chrome.runtime.sendMessage({
-//         getEventsByCalendarId: { startDate, endDate },
-//     });
-// });
-
-const getStartEndDateByMonthName = (monthName, year) => {
+/**
+ * @description Gets Start and End Date by Month Name
+ * @param {*} monthName 
+ * @param {*} year 
+ * @returns { startDate, endDate }
+ */
+const getMonthDateRange = (monthName, year) => {
     const months = [
         'January',
         'February',
@@ -180,6 +36,166 @@ const getStartEndDateByMonthName = (monthName, year) => {
 
     return { startDate, endDate };
 };
+
+/**
+ * @description Gets Users Email
+ * @returns void
+ */
+const fetchEmail = () => {
+    chrome.identity.getProfileUserInfo((result) => {
+        console.log(result);
+
+        const email = document.getElementById('user-email');
+        email.innerHTML = result?.email;
+    });
+};
+
+/**
+ * @description Initilise Calendar
+ * @returns void
+ */
+const initCalendar = () => {
+    myCal = new Calendar({
+        id: '#calendar',
+        calendarSize: 'small',
+        eventsData: [
+            {
+                id: 1,
+                start: '2023-12-20T03:00:00',
+                end: '2023-12-20T20:30:00',
+                name: 'Blockchain 101'
+            }
+        ],
+        selectedDateClicked: (currentDate, filteredMonthEvents) => {
+            showEventDetails(filteredMonthEvents);
+        }
+    });
+
+    initCalendarData();
+};
+
+/**
+ * @description Load the initial calendar Data
+ * @return void
+ */
+const initCalendarData = () => {
+    const currentDate = new Date();
+    const currentYear = currentDate.getFullYear();
+    const currentMonth = currentDate.toLocaleString('default', { month: 'long' });
+
+    const { startDate, endDate } = getMonthDateRange(
+        currentMonth,
+        currentYear
+    );
+
+    chrome.runtime.sendMessage({
+        getEventsByCalendarId: { startDate, endDate },
+    });
+
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        console.log(message);
+
+        message?.events.forEach((element, index) => {
+            myCal.addEventsData([{
+                id: element?.id,
+                start: element?.start?.dateTime,
+                end: element?.end?.dateTime,
+                name: element?.summary
+            }]);
+        });
+    });
+};
+
+/**
+ * @description Show the Event Details on Initial function load
+ * @param {*} filteredMonthEvents 
+ * @returns void
+ */
+const showEventDetails = (filteredMonthEvents) => {
+    const eventListModal = new bootstrap.Modal('#eventListModal', {
+        keyboard: false,
+    });
+
+    eventListModal.show();
+
+    const element = document.querySelector('#event-list-body');
+
+    // Make a UL and attach it to the parent
+    const eventListUl = document.createElement('ul');
+    eventListUl.classList.add('menu-list');
+    element.appendChild(eventListUl);
+
+    // Make a LI element and append it to the UL
+    filteredMonthEvents?.map((element, index) => {
+        const eventListLI = document.createElement('li');
+        eventListLI.classList.add('menu-item');
+        eventListLI.id = element?.id;// Custom id;
+        eventListLI.innerHTML = element?.name;
+        eventListUl.appendChild(eventListLI);
+    });
+
+    const eventListModalById = document.getElementById('eventListModal');
+    eventListModalById.addEventListener('hidden.bs.modal', () => {
+        filteredMonthEvents = [];
+        element.replaceChildren([]);
+    });
+
+};
+
+/**
+ * @description Initialise Widget Selector with data
+ * @returns void
+ */
+const initWidget = () => {
+    // Initialise the widget Selector Modal
+    const widgetSelector = new bootstrap.Modal('#widgetSelector', {
+        keyboard: false
+    });
+
+    // Show the options in widget Selector Modal
+    const menuList = document.getElementById('menu-list');
+    menuList.addEventListener('click', (event) => {
+
+        if (event.target.tagName === 'LI' && event.target.classList.contains('menu-item')) {
+            const selectedValue = event.target.textContent;
+
+            if (selectedValue === 'Calendar') {
+                // Initiliase the calendar if user selects the calendar widget
+                initCalendar();
+                widgetSelector.hide();
+            }
+        }
+    });
+};
+
+fetchEmail();
+initWidget();
+
+
+
+
+
+
+
+
+
+// When User clicks a month
+// Caution: use .on('eventListenrer') instead of .evoCalendar('eventListener'). It resets the calendar after it is initialised
+// $('#calendar').on('selectMonth', (event, activeMonth) => {
+//     const currentDate = new Date();
+//     const currentYear = currentDate.getFullYear();
+
+//     const { startDate, endDate } = getStartEndDateByMonthName(
+//         activeMonth,
+//         currentYear
+//     );
+
+//     chrome.runtime.sendMessage({
+//         getEventsByCalendarId: { startDate, endDate },
+//     });
+// });
+
+
 
 // chrome.storage.local.get(['access_token']).then((result) => {
 //     // console.log(result);
